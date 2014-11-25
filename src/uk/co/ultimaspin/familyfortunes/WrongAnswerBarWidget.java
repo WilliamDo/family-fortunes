@@ -63,4 +63,12 @@ public class WrongAnswerBarWidget {
         }
     }
 
+    public boolean allWrong() {
+        boolean result = true;
+        for (Node n : circles) {
+            result = result && n.isVisible();
+        }
+        return result;
+    }
+
 }

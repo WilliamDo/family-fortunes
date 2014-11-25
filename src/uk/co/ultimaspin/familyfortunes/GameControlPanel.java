@@ -12,16 +12,12 @@ import javafx.scene.control.LabelBuilder;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import uk.co.ultimaspin.familyfortunes.data.Question;
-import uk.co.ultimaspin.familyfortunes.data.QuestionBuilder;
 import uk.co.ultimaspin.familyfortunes.data.Quiz;
 import uk.co.ultimaspin.familyfortunes.data.QuizFileReader;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-
-import static uk.co.ultimaspin.familyfortunes.data.QuestionBuilder.newQuestion;
 
 /**
  * Created by william on 02/11/2014.
@@ -34,6 +30,9 @@ public class GameControlPanel {
 
     private final VBox answerButtonBox;
     private final Label questionLabel;
+    private final Button leftWrongButton;
+    private final Button rightWrongButton;
+    private final Button nextQuestionButton;
     private Quiz quiz;
 
 
@@ -61,26 +60,34 @@ public class GameControlPanel {
                 .text("Click on \"Next Question\" to begin")
                 .build();
 
-        Button leftWrongButton = ButtonBuilder.create()
+        this.leftWrongButton = ButtonBuilder.create()
                 .text("X - LEFT")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        leftBarWidget.wrongAnswer();
-                    }
-                })
                 .build();
 
+        leftWrongButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                leftBarWidget.wrongAnswer();
+                if (leftBarWidget.allWrong()) {
+                    leftWrongButton.setDisable(true);
+                }
+            }
+        });
 
-        Button rightWrongButton = ButtonBuilder.create()
+
+        this.rightWrongButton = ButtonBuilder.create()
                 .text("X - RIGHT")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        rightBarWidget.wrongAnswer();
-                    }
-                })
                 .build();
+
+        rightWrongButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                rightBarWidget.wrongAnswer();
+                if (rightBarWidget.allWrong()) {
+                    rightWrongButton.setDisable(true);
+                }
+            }
+        });
 
         HBox hBox = HBoxBuilder.create()
                 .children(leftWrongButton, answerButtonBox, rightWrongButton)
@@ -88,7 +95,7 @@ public class GameControlPanel {
                 .styleClass("ff-board")
                 .build();
 
-        Button nextQuestionButton = ButtonBuilder.create()
+        this.nextQuestionButton = ButtonBuilder.create()
                 .text("Next Question")
                 .onAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -126,16 +133,18 @@ public class GameControlPanel {
 
         for (final BoardWidget.AnswerWidget widget : answerWidgets) {
 
-            Button actionButton = ButtonBuilder.create()
+            final Button actionButton = ButtonBuilder.create()
                     .text(widget.getAnswerText().toUpperCase())
-                    .onAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent actionEvent) {
-                            widget.revealAnswer();
-                        }
-                    })
                     .prefWidth(200)
                     .build();
+
+            actionButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    widget.revealAnswer();
+                    actionButton.setDisable(true);
+                }
+            });
 
             answerButtonBox.getChildren().add(actionButton);
 
@@ -146,11 +155,22 @@ public class GameControlPanel {
         if (!quiz.isFinished()) {
             leftBarWidget.reset();
             rightBarWidget.reset();
+
+            leftWrongButton.setDisable(false);
+            rightWrongButton.setDisable(false);
+
             Question question = quiz.nextQuestion();
             boardWidget.setQuestion(question);
             questionLabel.setText(question.getQuestion());
             populateControlAnswerButtons();
+
+            if (quiz.isFinished()) {
+                this.nextQuestionButton.setDisable(true);
+            }
+
         }
+
+
     }
 
 }
