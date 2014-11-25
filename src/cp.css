@@ -1,0 +1,32 @@
+.ff-board {
+//    -fx-background-color: #8fbc8f;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6666FF, #19193E);
+}
+
+.ff-wrong {
+    -fx-fill: radial-gradient(center 50% 50%, radius 100%, red, black);
+}
+
+.ff-answer {
+    -fx-fill: linear-gradient(to bottom, #4775FF, #3366FF, #4755FF);
+    -fx-stroke: #FFFFCC;
+    -fx-stroke-width: 2;
+
+}
+
+.ff-answer-score {
+    -fx-fill: linear-gradient(to bottom, #005CE6, #0052CC, #005CE6);
+    -fx-stroke: #FFFFCC;
+    -fx-stroke-width: 2;
+
+}
+
+.ff-answer-number {
+    -fx-fill: linear-gradient(to bottom, #85C2FF, #70B8FF, #85C2FF);
+    -fx-stroke: #FFFFCC;
+    -fx-stroke-width: 2;
+}
+
+#ff-main {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6666FF, #19193E);
+}
