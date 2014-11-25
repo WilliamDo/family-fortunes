@@ -2,6 +2,7 @@ package uk.co.ultimaspin.familyfortunes;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import uk.co.ultimaspin.familyfortunes.data.PrizeAnswerUtil;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -28,7 +29,9 @@ public class SoundEffects {
     }
 
     public static void playAnswerSound() {
-        URL resource = SoundEffects.class.getClassLoader().getResource("answer.mp3");
+        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "wrong.mp3" : "answer.mp3";
+
+        URL resource = SoundEffects.class.getClassLoader().getResource(file);
         Media media = new Media(resource.toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
