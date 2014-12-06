@@ -1,5 +1,5 @@
 .ff-board {
-//    -fx-background-color: #8fbc8f;
+/*    -fx-background-color: #8fbc8f;*/
     -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6666FF, #19193E);
 }
 
@@ -29,4 +29,12 @@
 
 #ff-main {
     -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6666FF, #19193E);
+}
+
+.ff-total-score {
+/*    -fx-fill: linear-gradient(to bottom, #FFAD5C, #FFA347, #FFAD5C);*/
+    -fx-fill: linear-gradient(to bottom, #FF944D, #FF8533, #FF944D);
+    -fx-stroke: #FFFFCC;
+    -fx-stroke-width: 2;
+
 }

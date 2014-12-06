@@ -125,6 +125,7 @@ public class GameControlPanel {
                 .build();
 
         HBox selectQuestionBox = HBoxBuilder.create()
+                .spacing(10)
                 .children(this.questionComboBox, this.selectQuestionButton)
                 .build();
 

@@ -31,10 +31,14 @@ public class BoardWidget {
 
     private List<AnswerWidget> answerWidgets;
 
+    private TotalScoreWidget scoreWidget;
+
     public BoardWidget(VBox container, Label questionLabel) {
         this.container = container;
         this.questionLabel = questionLabel;
         this.answerWidgets = new ArrayList<AnswerWidget>();
+        this.scoreWidget = new TotalScoreWidget();
+        
     }
 
     public void setQuestion(Question question) {
@@ -43,13 +47,16 @@ public class BoardWidget {
         // This line looks funny but it is to clear the board
         container.getChildren().removeAll(container.getChildren());
         answerWidgets.clear();
+        scoreWidget.clear();
 
         for (int i = 0; i < question.getAnswers().size(); i++) {
             Answer answer = question.getAnswers().get(i);
-            AnswerWidget answerWidget = new AnswerWidget(i + 1, answer.getAnswer(), answer.score());
+            AnswerWidget answerWidget = new AnswerWidget(i + 1, answer.getAnswer(), answer.score(), scoreWidget);
             container.getChildren().add(answerWidget.getContainer());
             answerWidgets.add(answerWidget);
         }
+        
+        container.getChildren().add(scoreWidget.container);
 
         questionLabel.setText("... " + question.getQuestion().toLowerCase());
     }
@@ -67,9 +74,12 @@ public class BoardWidget {
         final Label pointsLabel;
         final HBox container;
 
+        final TotalScoreWidget scoreWidget;
+
         private boolean revealed;
 
-        AnswerWidget(int number, String data, int points) {
+        AnswerWidget(int number, String data, int points, TotalScoreWidget scoreWidget) {
+            this.scoreWidget = scoreWidget;
 
             Rectangle backDrop = RectangleBuilder.create()
                     .height(ANSWER_HEIGHT)
@@ -109,7 +119,7 @@ public class BoardWidget {
                     .build();
 
             this.pointsLabel = LabelBuilder.create()
-                    .font(Font.font("null", FontWeight.BOLD, 20))
+                    .font(Font.font("null", FontWeight.BOLD, 22))
                     .textFill(Color.WHITE)
                     .build();
 
@@ -143,6 +153,7 @@ public class BoardWidget {
                 label.setText(text.toUpperCase());
                 pointsLabel.setText(points + "");
                 this.revealed = true;
+                scoreWidget.addPoints(this.points);
             }
         }
 
@@ -158,6 +169,80 @@ public class BoardWidget {
             return this.text;
         }
 
+    }
+    
+    class TotalScoreWidget {
+
+        private final HBox container;
+        private int currentPoints;
+        private final Label pointsLabel;
+
+        TotalScoreWidget() {
+
+            this.currentPoints = 0;
+
+            Rectangle backDrop = RectangleBuilder.create()
+                    .height(ANSWER_HEIGHT)
+                    .width(480)
+                    .arcHeight(ARC_RADIUS)
+                    .arcWidth(ARC_RADIUS)
+                    .fill(Color.ORANGERED)
+                    .styleClass("ff-total-score")
+                    .build();
+
+            Label label = LabelBuilder.create()
+                    .font(Font.font("null", FontWeight.BOLD, 20))
+                    .textFill(Color.WHITE)
+                    .text("TOTAL")
+                    .build();
+
+            StackPane stackPane = StackPaneBuilder.create()
+                    .children(backDrop, label)
+                    .build();
+
+            Rectangle positionBackDrop = RectangleBuilder.create()
+                    .height(ANSWER_HEIGHT)
+                    .width(60)
+                    .visible(false)
+                    .build();
+
+            this.pointsLabel = LabelBuilder.create()
+                    .font(Font.font("null", FontWeight.BOLD, 22))
+                    .text("0")
+                    .textFill(Color.WHITE)
+                    .build();
+
+            Rectangle pointsBackDrop = RectangleBuilder.create()
+                    .height(ANSWER_HEIGHT)
+                    .width(60)
+                    .arcHeight(ARC_RADIUS)
+                    .arcWidth(ARC_RADIUS)
+                    .fill(Color.ORANGERED)
+                    .styleClass("ff-total-score")
+                    .build();
+
+            StackPane pointsPane = StackPaneBuilder.create()
+                    .children(pointsBackDrop, pointsLabel)
+                    .build();
+
+            this.container = HBoxBuilder.create()
+                    .spacing(10)
+                    .children(positionBackDrop, stackPane, pointsPane)
+                    .alignment(Pos.CENTER)
+                    .build();
+
+        }
+
+        void addPoints(int points) {
+            this.currentPoints += points;
+            this.pointsLabel.setText(currentPoints + "");
+        }
+
+        void clear() {
+            this.currentPoints = 0;
+            this.pointsLabel.setText(currentPoints + "");
+        }
+        
     }
 
 
