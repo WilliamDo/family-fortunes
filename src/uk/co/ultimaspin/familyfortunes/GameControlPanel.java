@@ -133,7 +133,7 @@ public class GameControlPanel {
 
 
         VBox allControls = VBoxBuilder.create()
-                .children(nextQuestionButton, selectQuestionBox, ScrollPaneBuilder.create().content(questionLabel).build(), hBox, prizeAnswerControl(), prizeTimeControl())
+                .children(nextQuestionButton, selectQuestionBox, ScrollPaneBuilder.create().content(questionLabel).build(), hBox, prizeAnswerControl(), prizeTimeControl(), soundTestControl())
                 .padding(new Insets(20, 20, 20, 20))
                 .spacing(10)
                 .build();
@@ -207,6 +207,45 @@ public class GameControlPanel {
         });
 
         return HBoxBuilder.create().children(LabelBuilder.create().text("Prize Answer Interval: ").build(), slider, timeIntervalLabel).build();
+
+    }
+
+    private HBox soundTestControl() {
+
+        Button wrongAnswer = ButtonBuilder.create()
+                .text("Wrong Answer")
+                .prefWidth(150)
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        SoundEffects.playWrongAnswerSound();
+                    }
+                })
+                .build();
+
+        Button correctAnswer = ButtonBuilder.create()
+                .text("Correct Answer")
+                .prefWidth(150)
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        SoundEffects.playAnswerSound();
+                    }
+                })
+                .build();
+
+        Button prizeAnswer = ButtonBuilder.create()
+                .text("Prize Answer")
+                .prefWidth(150)
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        SoundEffects.playPrizeAnswerSound();
+                    }
+                })
+                .build();
+
+        return HBoxBuilder.create().children(LabelBuilder.create().text("Sound Test: ").build(), wrongAnswer, correctAnswer, prizeAnswer).spacing(10).build();
 
     }
 

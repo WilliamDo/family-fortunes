@@ -9,8 +9,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import uk.co.ultimaspin.familyfortunes.data.Answer;
+import uk.co.ultimaspin.familyfortunes.data.PrizeAnswerUtil;
 import uk.co.ultimaspin.familyfortunes.data.Question;
+import uk.co.ultimaspin.familyfortunes.transition.FlashAnswerTransition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +71,15 @@ public class BoardWidget {
 
     class AnswerWidget {
 
+        final String STYLE_ANSWER_TEXT = "ff-answer";
+        final String STYLE_ANSWER_FLASH = "ff-answer-flash";
+
         final String text;
         final int points;
         final Label label;
         final Label pointsLabel;
         final HBox container;
+        final Rectangle backDrop;
 
         final TotalScoreWidget scoreWidget;
 
@@ -81,13 +88,13 @@ public class BoardWidget {
         AnswerWidget(int number, String data, int points, TotalScoreWidget scoreWidget) {
             this.scoreWidget = scoreWidget;
 
-            Rectangle backDrop = RectangleBuilder.create()
+            this.backDrop = RectangleBuilder.create()
                     .height(ANSWER_HEIGHT)
                     .width(480)
                     .arcHeight(ARC_RADIUS)
                     .arcWidth(ARC_RADIUS)
                     .fill(Color.BLUE)
-                    .styleClass("ff-answer")
+                    .styleClass(STYLE_ANSWER_TEXT)
                     .build();
 
             this.label = LabelBuilder.create()
@@ -149,7 +156,19 @@ public class BoardWidget {
 
         public void revealAnswer() {
             if (!isRevealed()) {
-                SoundEffects.playAnswerSound();
+
+                if (PrizeAnswerUtil.getInstance().isPrizeAnswerTime()) {
+                    FlashAnswerTransition flashAnswerTransition = new FlashAnswerTransition(backDrop, STYLE_ANSWER_TEXT, STYLE_ANSWER_FLASH, Duration.millis(180));
+                    flashAnswerTransition.setAutoReverse(true);
+                    flashAnswerTransition.setCycleCount(9);
+                    flashAnswerTransition.play();
+                    SoundEffects.playPrizeAnswerSound();
+                } else {
+                    SoundEffects.playAnswerSound();
+                }
+
+
+
                 label.setText(text.toUpperCase());
                 pointsLabel.setText(points + "");
                 this.revealed = true;

@@ -29,14 +29,19 @@ public class SoundEffects {
     }
 
     public static void playAnswerSound() {
-//        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "wrong.mp3" : "ff-bell.wav";
-        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "answer.mp3" : "ff-bell.wav";
-
-        URL resource = SoundEffects.class.getClassLoader().getResource(file);
+        URL resource = SoundEffects.class.getClassLoader().getResource("ff-bell.wav");
         Media media = new Media(resource.toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
     }
+
+    public static void playPrizeAnswerSound() {
+        URL resource = SoundEffects.class.getClassLoader().getResource("answer.mp3");
+        Media media = new Media(resource.toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
+    }
+
 
     public static void playWrongAnswerSound() {
         URL resource = SoundEffects.class.getClassLoader().getResource("wrong-actual.mp3");

@@ -14,6 +14,13 @@
 
 }
 
+.ff-answer-flash {
+    -fx-fill: linear-gradient(to bottom, #33CC33, #2EB82E, #33CC33);
+    -fx-stroke: #FFFFCC;
+    -fx-stroke-width: 2;
+
+}
+
 .ff-answer-score {
     -fx-fill: linear-gradient(to bottom, #005CE6, #0052CC, #005CE6);
     -fx-stroke: #FFFFCC;
