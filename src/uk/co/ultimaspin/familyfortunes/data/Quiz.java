@@ -1,50 +1,48 @@
 package uk.co.ultimaspin.familyfortunes.data;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by william on 15/11/2014.
  */
 public class Quiz {
 
-    private List<Question> questionDeck;
 
-    private Iterator<Question> iterator;
+    private final List<Question> questionDeck;
 
-    private Question currentQuestion;
-
-    private static int x = 0;
+    private List<Question> currentDeck;
 
     public Quiz(List<Question> questions) {
-        this.questionDeck = randomizeQuestions(questions);
-        iterator = questionDeck.iterator();
+        this.questionDeck = Collections.unmodifiableList(questions);
+        this.currentDeck = new ArrayList<Question>(questionDeck);
     }
 
     public Question nextQuestion() {
-        if (iterator.hasNext()) {
-            Question question = iterator.next();
-            this.currentQuestion = question;
+        if (!isFinished()) {
+            Random random = new Random();
+
+
+            int index = random.nextInt(currentDeck.size());
+            Question nextQuestion = currentDeck.get(index);
+            currentDeck.remove(index);
+
+            return nextQuestion;
         }
-        return this.currentQuestion;
+        return null;
+
     }
 
     public boolean isFinished() {
-        return !iterator.hasNext();
+        return currentDeck.isEmpty();
     }
 
-    private List<Question> randomizeQuestions(List<Question> questions) {
-        List<Question> result = new ArrayList<Question>();
-
-        while (!questions.isEmpty()) {
-            Random random = new Random();
-            int i = random.nextInt(questions.size());
-            result.add(questions.remove(i));
-        }
-
-        return result;
+    public List<Question> getRemainingQuestions() {
+        return Collections.unmodifiableList(this.currentDeck);
     }
+
+    public void remove(Question question) {
+        this.currentDeck.remove(question);
+    }
+
 
 }

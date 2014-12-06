@@ -1,5 +1,6 @@
 package uk.co.ultimaspin.familyfortunes.data;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -7,7 +8,11 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class PrizeAnswerUtil {
 
-    private static final long INTERVAL_PRIZE_ANSWER = 60L * 1000L;
+    private static final long INTERVAL_PRIZE_ANSWER = 30L * 60L * 1000L;
+
+    private AtomicLong timeInterval;
+
+    private AtomicBoolean prizeAnswerEnabled;
 
     private AtomicLong lastPrizeAnswerTime;
     // Set current time interval;
@@ -16,6 +21,8 @@ public class PrizeAnswerUtil {
 
     private PrizeAnswerUtil() {
         lastPrizeAnswerTime = new AtomicLong(System.currentTimeMillis());
+        prizeAnswerEnabled = new AtomicBoolean(false);
+        timeInterval = new AtomicLong(INTERVAL_PRIZE_ANSWER);
     }
 
     public boolean isPrizeAnswerTime() {
@@ -24,13 +31,26 @@ public class PrizeAnswerUtil {
 
         boolean isPrizeAnswerTime = false;
 
-        if (currentTime - lastPrizeAnswerTime.get() > INTERVAL_PRIZE_ANSWER) {
+        if (currentTime - lastPrizeAnswerTime.get() > timeInterval.get()) {
             isPrizeAnswerTime = true;
             lastPrizeAnswerTime.set(currentTime);
         }
 
-        return isPrizeAnswerTime;
+        return isPrizeAnswerTime && prizeAnswerEnabled.get();
 
+    }
+
+    public void setEnabled(Boolean enabled) {
+        prizeAnswerEnabled.set(enabled);
+        if (enabled) {
+            // Reset the last prize answer time to start from now
+            lastPrizeAnswerTime.set(System.currentTimeMillis());
+        }
+    }
+
+    public void setTimerInterval(long intervalInMinutes) {
+        timeInterval.set(intervalInMinutes * 60L * 1000L);
+        lastPrizeAnswerTime.set(System.currentTimeMillis());
     }
 
     public static PrizeAnswerUtil getInstance() {

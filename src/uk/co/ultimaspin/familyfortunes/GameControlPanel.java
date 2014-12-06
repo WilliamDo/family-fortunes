@@ -1,16 +1,18 @@
 package uk.co.ultimaspin.familyfortunes;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBuilder;
-import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import uk.co.ultimaspin.familyfortunes.data.PrizeAnswerUtil;
 import uk.co.ultimaspin.familyfortunes.data.Question;
 import uk.co.ultimaspin.familyfortunes.data.Quiz;
 import uk.co.ultimaspin.familyfortunes.data.QuizFileReader;
@@ -33,6 +35,10 @@ public class GameControlPanel {
     private final Button leftWrongButton;
     private final Button rightWrongButton;
     private final Button nextQuestionButton;
+    private final Button selectQuestionButton;
+
+    private final ComboBox<Question> questionComboBox;
+
     private Quiz quiz;
 
 
@@ -44,8 +50,8 @@ public class GameControlPanel {
 
         this.answerButtonBox = VBoxBuilder.create()
                 .spacing(8)
-                .minWidth(200)
-                .minHeight(300)
+                .minWidth(420)
+                .minHeight(200)
                 .alignment(Pos.TOP_CENTER)
                 .build();
         try {
@@ -57,7 +63,8 @@ public class GameControlPanel {
         }
 
         this.questionLabel = LabelBuilder.create()
-                .text("Click on \"Next Question\" to begin")
+                .text("Select a question to begin")
+                .wrapText(true)
                 .build();
 
         this.leftWrongButton = ButtonBuilder.create()
@@ -96,7 +103,7 @@ public class GameControlPanel {
                 .build();
 
         this.nextQuestionButton = ButtonBuilder.create()
-                .text("Next Question")
+                .text("Next Random Question")
                 .onAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
@@ -105,8 +112,27 @@ public class GameControlPanel {
                 })
                 .build();
 
+        this.questionComboBox = new ComboBox<Question>();
+
+        this.selectQuestionButton = ButtonBuilder.create()
+                .text("Select Question")
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        selectQuestion();
+                    }
+                })
+                .build();
+
+        HBox selectQuestionBox = HBoxBuilder.create()
+                .children(this.questionComboBox, this.selectQuestionButton)
+                .build();
+
+        updateRemainingQuestions();
+
+
         VBox allControls = VBoxBuilder.create()
-                .children(nextQuestionButton, questionLabel, hBox)
+                .children(nextQuestionButton, selectQuestionBox, ScrollPaneBuilder.create().content(questionLabel).build(), hBox, prizeAnswerControl(), prizeTimeControl())
                 .padding(new Insets(20, 20, 20, 20))
                 .spacing(10)
                 .build();
@@ -118,11 +144,68 @@ public class GameControlPanel {
 
         Stage adminStage = new Stage();
         adminStage.setTitle("Quiz Master Control Panel");
-        Scene scene = new Scene(flowPaneContainer, 600, 480);
+        Scene scene = new Scene(flowPaneContainer, 800, 600);
         scene.getStylesheets().add("cp.css");
         adminStage.setScene(scene);
         adminStage.sizeToScene();
         adminStage.show();
+
+    }
+
+    private HBox prizeAnswerControl() {
+        final ToggleGroup group = ToggleGroupBuilder.create()
+                .build();
+
+        RadioButton rbOn = RadioButtonBuilder.create()
+                .toggleGroup(group)
+                .text("On")
+                .userData(Boolean.TRUE)
+                .build();
+
+        RadioButton rbOff = RadioButtonBuilder.create()
+                .toggleGroup(group)
+                .selected(true)
+                .text("Off")
+                .userData(Boolean.FALSE)
+                .build();
+
+        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle oldToggle, Toggle newToggle) {
+                if (group.getSelectedToggle() != null) {
+                    Boolean enabled = (Boolean) group.getSelectedToggle().getUserData();
+                    PrizeAnswerUtil.getInstance().setEnabled(enabled);
+                }
+            }
+        });
+
+        return HBoxBuilder.create().children(LabelBuilder.create().text("Prize Answer Effect: ").build(), rbOn, rbOff).build();
+    }
+
+    private HBox prizeTimeControl() {
+
+        Slider slider = SliderBuilder.create()
+                .min(0)
+                .max(60)
+                .value(30)
+                .showTickLabels(true)
+                .majorTickUnit(10)
+                .minorTickCount(9)
+                .snapToTicks(true)
+                .minWidth(350)
+                .build();
+
+        final Label timeIntervalLabel = LabelBuilder.create().text(String.format("%d minute(s)", Math.round(slider.getValue()))).build();
+
+        slider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                timeIntervalLabel.setText(String.format("%d minute(s)", number2.intValue()));
+                PrizeAnswerUtil.getInstance().setTimerInterval(number2.longValue());
+            }
+        });
+
+        return HBoxBuilder.create().children(LabelBuilder.create().text("Prize Answer Interval: ").build(), slider, timeIntervalLabel).build();
 
     }
 
@@ -135,7 +218,7 @@ public class GameControlPanel {
 
             final Button actionButton = ButtonBuilder.create()
                     .text(widget.getAnswerText().toUpperCase())
-                    .prefWidth(200)
+                    .prefWidth(240)
                     .build();
 
             actionButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -153,11 +236,7 @@ public class GameControlPanel {
 
     private void nextQuestion() {
         if (!quiz.isFinished()) {
-            leftBarWidget.reset();
-            rightBarWidget.reset();
-
-            leftWrongButton.setDisable(false);
-            rightWrongButton.setDisable(false);
+            resetBoardAndControls();
 
             Question question = quiz.nextQuestion();
             boardWidget.setQuestion(question);
@@ -168,9 +247,46 @@ public class GameControlPanel {
                 this.nextQuestionButton.setDisable(true);
             }
 
+            updateRemainingQuestions();
+
         }
 
+    }
 
+    private void resetBoardAndControls() {
+        leftBarWidget.reset();
+        rightBarWidget.reset();
+
+        leftWrongButton.setDisable(false);
+        rightWrongButton.setDisable(false);
+    }
+
+    private void selectQuestion() {
+        if (!quiz.isFinished()) {
+            resetBoardAndControls();
+
+            Question selectedQuestion = questionComboBox.getValue();
+
+            if (selectedQuestion != null) {
+                quiz.remove(selectedQuestion);
+                boardWidget.setQuestion(selectedQuestion);
+                questionLabel.setText(selectedQuestion.getQuestion());
+                populateControlAnswerButtons();
+
+                if (quiz.isFinished()) {
+                    this.nextQuestionButton.setDisable(true);
+                }
+
+                updateRemainingQuestions();
+            }
+
+
+        }
+    }
+
+    private void updateRemainingQuestions() {
+        ObservableList<Question> questions = FXCollections.observableArrayList(quiz.getRemainingQuestions());
+        questionComboBox.setItems(questions);
     }
 
 }

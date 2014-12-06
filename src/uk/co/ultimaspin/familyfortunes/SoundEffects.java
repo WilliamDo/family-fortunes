@@ -29,7 +29,8 @@ public class SoundEffects {
     }
 
     public static void playAnswerSound() {
-        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "wrong.mp3" : "answer.mp3";
+//        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "wrong.mp3" : "ff-bell.wav";
+        String file = PrizeAnswerUtil.getInstance().isPrizeAnswerTime() ? "answer.mp3" : "ff-bell.wav";
 
         URL resource = SoundEffects.class.getClassLoader().getResource(file);
         Media media = new Media(resource.toString());

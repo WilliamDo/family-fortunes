@@ -25,4 +25,9 @@ public class Question {
     public List<Answer> getAnswers() {
         return this.answers;
     }
+
+    @Override
+    public String toString() {
+        return this.question;
+    }
 }
