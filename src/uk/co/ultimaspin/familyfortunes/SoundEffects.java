@@ -29,7 +29,7 @@ public class SoundEffects {
     }
 
     public static void playAnswerSound() {
-        URL resource = SoundEffects.class.getClassLoader().getResource("ff-bell.wav");
+        URL resource = SoundEffects.class.getClassLoader().getResource("ff-bell.m4a");
         Media media = new Media(resource.toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
