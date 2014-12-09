@@ -18,7 +18,8 @@ import javafx.scene.text.FontWeight;
 public class WrongAnswerBarWidget {
 
 
-
+    public static final int CIRCLE_RADIUS = 45;
+    public static final int TEXT_SIZE = 45;
     Node[] circles;
 
 
@@ -30,12 +31,12 @@ public class WrongAnswerBarWidget {
 
 
     private Node createCircle() {
-        Circle circle = CircleBuilder.create().radius(60).styleClass("ff-wrong").build();
+        Circle circle = CircleBuilder.create().radius(CIRCLE_RADIUS).styleClass("ff-wrong").build();
 
         Label label = LabelBuilder.create()
                 .text("X")
                 .textFill(Color.WHITE)
-                .font(Font.font(null, FontWeight.BOLD, 60))
+                .font(Font.font(null, FontWeight.BOLD, TEXT_SIZE))
                 .build();
 
         StackPane node = StackPaneBuilder.create()

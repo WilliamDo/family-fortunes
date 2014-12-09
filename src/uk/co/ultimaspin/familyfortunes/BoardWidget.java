@@ -23,8 +23,10 @@ import java.util.List;
  */
 public class BoardWidget {
 
-    private static final double ANSWER_HEIGHT = 60;
+    private static final double ANSWER_HEIGHT = 40;
     private static final double ARC_RADIUS = 40;
+    public static final int ANSWER_WIDTH = 60;
+    public static final int ANSWER_TEXT_WIDTH = 400;
 
     private final VBox container;
 
@@ -90,7 +92,7 @@ public class BoardWidget {
 
             this.backDrop = RectangleBuilder.create()
                     .height(ANSWER_HEIGHT)
-                    .width(480)
+                    .width(ANSWER_TEXT_WIDTH)
                     .arcHeight(ARC_RADIUS)
                     .arcWidth(ARC_RADIUS)
                     .fill(Color.BLUE)
@@ -132,7 +134,7 @@ public class BoardWidget {
 
             Rectangle pointsBackDrop = RectangleBuilder.create()
                     .height(ANSWER_HEIGHT)
-                    .width(60)
+                    .width(ANSWER_WIDTH)
                     .arcHeight(ARC_RADIUS)
                     .arcWidth(ARC_RADIUS)
                     .fill(Color.BLUE)
@@ -202,7 +204,7 @@ public class BoardWidget {
 
             Rectangle backDrop = RectangleBuilder.create()
                     .height(ANSWER_HEIGHT)
-                    .width(480)
+                    .width(ANSWER_TEXT_WIDTH)
                     .arcHeight(ARC_RADIUS)
                     .arcWidth(ARC_RADIUS)
                     .fill(Color.ORANGERED)

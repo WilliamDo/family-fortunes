@@ -18,8 +18,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private static final String GAME_TITLE = "Family Fortunes";
-    private static final int WIDTH = 1024;
-    private static final int HEIGHT = 768;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
 
 
     @Override
