@@ -37,6 +37,8 @@ public class GameControlPanel {
     private final Button nextQuestionButton;
     private final Button selectQuestionButton;
 
+    private Slider slider;
+
     private final ComboBox<Question> questionComboBox;
 
     private Quiz quiz;
@@ -176,6 +178,7 @@ public class GameControlPanel {
                 if (group.getSelectedToggle() != null) {
                     Boolean enabled = (Boolean) group.getSelectedToggle().getUserData();
                     PrizeAnswerUtil.getInstance().setEnabled(enabled);
+                    GameControlPanel.this.slider.setDisable(!enabled);
                 }
             }
         });
@@ -185,7 +188,7 @@ public class GameControlPanel {
 
     private HBox prizeTimeControl() {
 
-        Slider slider = SliderBuilder.create()
+        this.slider = SliderBuilder.create()
                 .min(0)
                 .max(60)
                 .value(30)
@@ -194,6 +197,7 @@ public class GameControlPanel {
                 .minorTickCount(9)
                 .snapToTicks(true)
                 .minWidth(350)
+                .disable(true)
                 .build();
 
         final Label timeIntervalLabel = LabelBuilder.create().text(String.format("%d minute(s)", Math.round(slider.getValue()))).build();
