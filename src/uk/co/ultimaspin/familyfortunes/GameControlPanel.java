@@ -98,8 +98,32 @@ public class GameControlPanel {
             }
         });
 
+        Button resetLeftButton = ButtonBuilder.create()
+                .text("RESET")
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        leftBarWidget.reset();
+                        leftWrongButton.setDisable(false);
+                    }
+                })
+                .build();
+
+        Button resetRightButton = ButtonBuilder.create()
+                .text("RESET")
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        rightBarWidget.reset();
+                        rightWrongButton.setDisable(false);
+                    }
+                })
+                .build();
+
         HBox hBox = HBoxBuilder.create()
-                .children(leftWrongButton, answerButtonBox, rightWrongButton)
+                .children(VBoxBuilder.create().spacing(8).children(leftWrongButton, resetLeftButton).build(),
+                        answerButtonBox,
+                        VBoxBuilder.create().spacing(8).children(rightWrongButton, resetRightButton).build())
                 .spacing(10)
                 .styleClass("ff-board")
                 .build();
