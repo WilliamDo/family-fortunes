@@ -2,13 +2,10 @@ package uk.co.ultimaspin.familyfortunes;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.StackPaneBuilder;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.CircleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -30,18 +27,17 @@ public class WrongAnswerBarWidget {
 
 
     private Node createCircle() {
-        Circle circle = CircleBuilder.create().radius(60).styleClass("ff-wrong").build();
+        Circle circle = new Circle();
+        circle.setRadius(60);
+        circle.setStyle("ff-wrong");
 
-        Label label = LabelBuilder.create()
-                .text("X")
-                .textFill(Color.WHITE)
-                .font(Font.font(null, FontWeight.BOLD, 60))
-                .build();
+        Label label = new Label();
+                label.setText("X");
+                label.setTextFill(Color.WHITE);
+                label.setFont(Font.font(null, FontWeight.BOLD, 60));
 
-        StackPane node = StackPaneBuilder.create()
-                .children(circle, label)
-                .visible(false)
-                .build();
+        StackPane node = new StackPane(circle, label);
+        node.setVisible(false);
 
         return node;
 

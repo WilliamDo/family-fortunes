@@ -50,124 +50,85 @@ public class GameControlPanel {
         this.leftBarWidget = leftBarWidget;
         this.rightBarWidget = rightBarWidget;
 
-        this.answerButtonBox = VBoxBuilder.create()
-                .spacing(8)
-                .minWidth(420)
-                .minHeight(200)
-                .alignment(Pos.TOP_CENTER)
-                .build();
+        this.answerButtonBox = new VBox();
+        this.answerButtonBox.setSpacing(8);
+        this.answerButtonBox.setMinWidth(420);
+        this.answerButtonBox.setMinHeight(200);
+        this.answerButtonBox.setAlignment(Pos.TOP_CENTER);
+
         try {
             this.quiz = new QuizFileReader("sample_quiz.csv").getQuiz();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
 
-        this.questionLabel = LabelBuilder.create()
-                .text("Select a question to begin")
-                .wrapText(true)
-                .build();
+        this.questionLabel = new Label();
+        this.questionLabel.setText("Select a question to begin");
+        this.questionLabel.setWrapText(true);
 
-        this.leftWrongButton = ButtonBuilder.create()
-                .text("X - LEFT")
-                .build();
+        this.leftWrongButton = new Button("X - LEFT");
 
-        leftWrongButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                leftBarWidget.wrongAnswer();
-                if (leftBarWidget.allWrong()) {
-                    leftWrongButton.setDisable(true);
-                }
+        leftWrongButton.setOnAction(actionEvent -> {
+            leftBarWidget.wrongAnswer();
+            if (leftBarWidget.allWrong()) {
+                leftWrongButton.setDisable(true);
             }
         });
 
 
-        this.rightWrongButton = ButtonBuilder.create()
-                .text("X - RIGHT")
-                .build();
+        this.rightWrongButton = new Button("X - RIGHT");
 
-        rightWrongButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                rightBarWidget.wrongAnswer();
-                if (rightBarWidget.allWrong()) {
-                    rightWrongButton.setDisable(true);
-                }
+        rightWrongButton.setOnAction(actionEvent -> {
+            rightBarWidget.wrongAnswer();
+            if (rightBarWidget.allWrong()) {
+                rightWrongButton.setDisable(true);
             }
         });
 
-        Button resetLeftButton = ButtonBuilder.create()
-                .text("RESET")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        leftBarWidget.reset();
-                        leftWrongButton.setDisable(false);
-                    }
-                })
-                .build();
+        Button resetLeftButton = new Button("RESET");
+        resetLeftButton.setOnAction(actionEvent -> {
+            leftBarWidget.reset();
+            leftWrongButton.setDisable(false);
+        });
 
-        Button resetRightButton = ButtonBuilder.create()
-                .text("RESET")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        rightBarWidget.reset();
-                        rightWrongButton.setDisable(false);
-                    }
-                })
-                .build();
+        Button resetRightButton = new Button("RESET");
 
-        HBox hBox = HBoxBuilder.create()
-                .children(VBoxBuilder.create().spacing(8).children(leftWrongButton, resetLeftButton).build(),
-                        answerButtonBox,
-                        VBoxBuilder.create().spacing(8).children(rightWrongButton, resetRightButton).build())
-                .spacing(10)
-                .styleClass("ff-board")
-                .build();
+        resetRightButton.setOnAction(actionEvent -> {
+            rightBarWidget.reset();
+            rightWrongButton.setDisable(false);
+        });
 
-        this.nextQuestionButton = ButtonBuilder.create()
-                .text("Next Random Question")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        nextQuestion();
-                    }
-                })
-                .build();
+        HBox hBox = new HBox(new VBox(8, leftWrongButton, resetLeftButton),
+                answerButtonBox,
+                new VBox(8, rightWrongButton, resetRightButton));
+        hBox.setSpacing(10);
+        hBox.setStyle("ff-board");
 
-        this.questionComboBox = new ComboBox<Question>();
+        this.nextQuestionButton = new Button("Next Random Question");
+        this.nextQuestionButton.setOnAction(actionEvent -> nextQuestion());
 
-        this.selectQuestionButton = ButtonBuilder.create()
-                .text("Select Question")
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        selectQuestion();
-                    }
-                })
-                .build();
+        this.questionComboBox = new ComboBox<>();
 
-        HBox selectQuestionBox = HBoxBuilder.create()
-                .spacing(10)
-                .children(this.questionComboBox, this.selectQuestionButton)
-                .build();
+        this.selectQuestionButton = new Button("Select Question");
+        this.selectQuestionButton.setOnAction(actionEvent -> selectQuestion());
+
+        HBox selectQuestionBox = new HBox(this.questionComboBox, this.selectQuestionButton);
+        selectQuestionBox.setSpacing(10);
 
         updateRemainingQuestions();
 
+        VBox allControls = new VBox(nextQuestionButton,
+                selectQuestionBox,
+                new ScrollPane(questionLabel),
+                hBox,
+                prizeAnswerControl(),
+                prizeTimeControl(),
+                soundTestControl());
+        allControls.setPadding(new Insets(20, 20, 20, 20));
+        allControls.setSpacing(10);
 
-        VBox allControls = VBoxBuilder.create()
-                .children(nextQuestionButton, selectQuestionBox, ScrollPaneBuilder.create().content(questionLabel).build(), hBox, prizeAnswerControl(), prizeTimeControl(), soundTestControl())
-                .padding(new Insets(20, 20, 20, 20))
-                .spacing(10)
-                .build();
-
-        FlowPane flowPaneContainer = FlowPaneBuilder.create()
-                .children(allControls)
-                .alignment(Pos.TOP_CENTER)
-                .build();
+        FlowPane flowPaneContainer = new FlowPane(allControls);
+        flowPaneContainer.setAlignment(Pos.TOP_CENTER);
 
         Stage adminStage = new Stage();
         adminStage.setTitle("Quiz Master Control Panel");
@@ -180,101 +141,74 @@ public class GameControlPanel {
     }
 
     private HBox prizeAnswerControl() {
-        final ToggleGroup group = ToggleGroupBuilder.create()
-                .build();
+        final ToggleGroup group = new ToggleGroup();
 
-        RadioButton rbOn = RadioButtonBuilder.create()
-                .toggleGroup(group)
-                .text("On")
-                .userData(Boolean.TRUE)
-                .build();
+        RadioButton rbOn = new RadioButton();
+        rbOn.setToggleGroup(group);
+        rbOn.setText("On");
+        rbOn.setUserData(Boolean.TRUE);
 
-        RadioButton rbOff = RadioButtonBuilder.create()
-                .toggleGroup(group)
-                .selected(true)
-                .text("Off")
-                .userData(Boolean.FALSE)
-                .build();
+        RadioButton rbOff = new RadioButton();
+        rbOff.setToggleGroup(group);
+        rbOff.setSelected(true);
+        rbOff.setText("Off");
+        rbOff.setUserData(Boolean.FALSE);
 
-        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle oldToggle, Toggle newToggle) {
-                if (group.getSelectedToggle() != null) {
-                    Boolean enabled = (Boolean) group.getSelectedToggle().getUserData();
-                    PrizeAnswerUtil.getInstance().setEnabled(enabled);
-                    GameControlPanel.this.slider.setDisable(!enabled);
-                }
+        group.selectedToggleProperty().addListener((observableValue, oldToggle, newToggle) -> {
+            if (group.getSelectedToggle() != null) {
+                Boolean enabled = (Boolean) group.getSelectedToggle().getUserData();
+                PrizeAnswerUtil.getInstance().setEnabled(enabled);
+                GameControlPanel.this.slider.setDisable(!enabled);
             }
         });
 
-        return HBoxBuilder.create().children(LabelBuilder.create().text("Prize Answer Effect: ").build(), rbOn, rbOff).build();
+        return new HBox(new Label("Prize Answer Effect: "), rbOn, rbOff);
     }
 
     private HBox prizeTimeControl() {
 
-        this.slider = SliderBuilder.create()
-                .min(0)
-                .max(60)
-                .value(30)
-                .showTickLabels(true)
-                .majorTickUnit(10)
-                .minorTickCount(9)
-                .snapToTicks(true)
-                .minWidth(350)
-                .disable(true)
-                .build();
+        this.slider = new Slider();
+        this.slider.setMin(0);
+        this.slider.setMax(60);
+        this.slider.setValue(30);
+        this.slider.setShowTickLabels(true);
+        this.slider.setMajorTickUnit(10);
+        this.slider.setMinorTickCount(9);
+        this.slider.setSnapToTicks(true);
+        this.slider.setMinWidth(350);
+        this.slider.setDisable(true);
 
-        final Label timeIntervalLabel = LabelBuilder.create().text(String.format("%d minute(s)", Math.round(slider.getValue()))).build();
+        final Label timeIntervalLabel = new Label(String.format("%d minute(s)", Math.round(slider.getValue())));
 
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                timeIntervalLabel.setText(String.format("%d minute(s)", number2.intValue()));
-                PrizeAnswerUtil.getInstance().setTimerInterval(number2.longValue());
-            }
+        slider.valueProperty().addListener((observableValue, number, number2) -> {
+            timeIntervalLabel.setText(String.format("%d minute(s)", number2.intValue()));
+            PrizeAnswerUtil.getInstance().setTimerInterval(number2.longValue());
         });
 
-        return HBoxBuilder.create().children(LabelBuilder.create().text("Prize Answer Interval: ").build(), slider, timeIntervalLabel).build();
+        return new HBox(new Label("Prize Answer Interval: "), slider, timeIntervalLabel);
 
     }
 
     private HBox soundTestControl() {
 
-        Button wrongAnswer = ButtonBuilder.create()
-                .text("Wrong Answer")
-                .prefWidth(150)
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        SoundEffects.playWrongAnswerSound();
-                    }
-                })
-                .build();
+        Button wrongAnswer = new Button();
+        wrongAnswer.setText("Wrong Answer");
+        wrongAnswer.setPrefWidth(150);
+        wrongAnswer.setOnAction(actionEvent -> SoundEffects.playWrongAnswerSound());
 
-        Button correctAnswer = ButtonBuilder.create()
-                .text("Correct Answer")
-                .prefWidth(150)
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        SoundEffects.playAnswerSound();
-                    }
-                })
-                .build();
+        Button correctAnswer = new Button();
+        correctAnswer.setText("Correct Answer");
+        correctAnswer.setPrefWidth(150);
+        correctAnswer.setOnAction(actionEvent -> SoundEffects.playAnswerSound());
 
-        Button prizeAnswer = ButtonBuilder.create()
-                .text("Prize Answer")
-                .prefWidth(150)
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        SoundEffects.playPrizeAnswerSound();
-                    }
-                })
-                .build();
+        Button prizeAnswer = new Button();
+        prizeAnswer.setText("Prize Answer");
+        prizeAnswer.setPrefWidth(150);
+        prizeAnswer.setOnAction(actionEvent -> SoundEffects.playPrizeAnswerSound());
 
-        return HBoxBuilder.create().children(LabelBuilder.create().text("Sound Test: ").build(), wrongAnswer, correctAnswer, prizeAnswer).spacing(10).build();
-
+        HBox container = new HBox(new Label("Sound Test: "), wrongAnswer, correctAnswer, prizeAnswer);
+        container.setSpacing(10);
+        return container;
     }
 
     private void populateControlAnswerButtons() {
@@ -284,17 +218,13 @@ public class GameControlPanel {
 
         for (final BoardWidget.AnswerWidget widget : answerWidgets) {
 
-            final Button actionButton = ButtonBuilder.create()
-                    .text(widget.getAnswerText().toUpperCase())
-                    .prefWidth(240)
-                    .build();
+            final Button actionButton = new Button();
+            actionButton.setText(widget.getAnswerText().toUpperCase());
+            actionButton.setPrefWidth(240);
 
-            actionButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    widget.revealAnswer();
-                    actionButton.setDisable(true);
-                }
+            actionButton.setOnAction(actionEvent -> {
+                widget.revealAnswer();
+                actionButton.setDisable(true);
             });
 
             answerButtonBox.getChildren().add(actionButton);

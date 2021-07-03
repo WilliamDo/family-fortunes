@@ -1,7 +1,19 @@
-apply plugin: 'java'
+plugins {
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.9'
+}
 
-jar {
-	manifest {
-		attributes 'Main-Class': 'uk.co.ultimaspin.familyfortunes.Main'
-	}
+repositories {
+	// Use Maven Central for resolving dependencies.
+	mavenCentral()
+}
+
+application {
+	// Define the main class for the application.
+	mainClass = "uk.co.ultimaspin.familyfortunes.Main"
+}
+
+javafx {
+	version = "11.0.2"
+	modules = [ "javafx.controls", "javafx.media"]
 }

@@ -2,11 +2,9 @@ package uk.co.ultimaspin.familyfortunes;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.LabelBuilder;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
@@ -39,7 +37,7 @@ public class BoardWidget {
     public BoardWidget(VBox container, Label questionLabel) {
         this.container = container;
         this.questionLabel = questionLabel;
-        this.answerWidgets = new ArrayList<AnswerWidget>();
+        this.answerWidgets = new ArrayList<>();
         this.scoreWidget = new TotalScoreWidget();
         
     }
@@ -88,66 +86,52 @@ public class BoardWidget {
         AnswerWidget(int number, String data, int points, TotalScoreWidget scoreWidget) {
             this.scoreWidget = scoreWidget;
 
-            this.backDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(480)
-                    .arcHeight(ARC_RADIUS)
-                    .arcWidth(ARC_RADIUS)
-                    .fill(Color.BLUE)
-                    .styleClass(STYLE_ANSWER_TEXT)
-                    .build();
+            this.backDrop = new Rectangle();
+            this.backDrop.setHeight(ANSWER_HEIGHT);
+            this.backDrop.setWidth(480);
+            this.backDrop.setArcHeight(ARC_RADIUS);
+            this.backDrop.setArcWidth(ARC_RADIUS);
+            this.backDrop.setFill(Color.BLUE);
+            this.backDrop.setStyle(STYLE_ANSWER_TEXT);
 
-            this.label = LabelBuilder.create()
-                    .font(Font.font("null", FontWeight.BOLD, 20))
-                    .textFill(Color.WHITE)
-                    .build();
+            this.label = new Label();
+            this.label.setFont(Font.font("null", FontWeight.BOLD, 20));
+            this.label.setTextFill(Color.WHITE);
 
-            StackPane stackPane = StackPaneBuilder.create()
-                    .children(backDrop, label)
-                    .build();
+            StackPane stackPane = new StackPane(backDrop, label);
 
-            Rectangle positionBackDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(60)
-                    .arcHeight(ARC_RADIUS)
-                    .arcWidth(ARC_RADIUS)
-                    .fill(Color.DARKBLUE)
-                    .styleClass("ff-answer-number")
-                    .build();
+            Rectangle positionBackDrop = new Rectangle();
+            positionBackDrop.setHeight(ANSWER_HEIGHT);
+            positionBackDrop.setWidth(60);
+            positionBackDrop.setArcHeight(ARC_RADIUS);
+            positionBackDrop.setArcWidth(ARC_RADIUS);
+            positionBackDrop.setFill(Color.DARKBLUE);
+            positionBackDrop.setStyle("ff-answer-number");
 
-            Label positionLabel = LabelBuilder.create()
-                    .text(number + "")
-                    .font(Font.font("null", FontWeight.BOLD, 30))
-                    .textFill(Color.WHITE)
-                    .build();
+            Label positionLabel = new Label();
+            positionLabel.setText(number + "");
+            positionLabel.setFont(Font.font("null", FontWeight.BOLD, 30));
+            positionLabel.setTextFill(Color.WHITE);
 
-            StackPane position = StackPaneBuilder.create()
-                    .children(positionBackDrop, positionLabel)
-                    .build();
+            StackPane position = new StackPane(positionBackDrop, positionLabel);
 
-            this.pointsLabel = LabelBuilder.create()
-                    .font(Font.font("null", FontWeight.BOLD, 22))
-                    .textFill(Color.WHITE)
-                    .build();
+            this.pointsLabel = new Label();
+            this.pointsLabel.setFont(Font.font("null", FontWeight.BOLD, 22));
+            this.pointsLabel.setTextFill(Color.WHITE);
 
-            Rectangle pointsBackDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(60)
-                    .arcHeight(ARC_RADIUS)
-                    .arcWidth(ARC_RADIUS)
-                    .fill(Color.BLUE)
-                    .styleClass("ff-answer-score")
-                    .build();
+            Rectangle pointsBackDrop = new Rectangle();
+            pointsBackDrop.setHeight(ANSWER_HEIGHT);
+            pointsBackDrop.setWidth(60);
+            pointsBackDrop.setArcHeight(ARC_RADIUS);
+            pointsBackDrop.setArcWidth(ARC_RADIUS);
+            pointsBackDrop.setFill(Color.BLUE);
+            pointsBackDrop.setStyle("ff-answer-score");
 
-            StackPane pointsPane = StackPaneBuilder.create()
-                    .children(pointsBackDrop, pointsLabel)
-                    .build();
+            StackPane pointsPane = new StackPane(pointsBackDrop, pointsLabel);
 
-            this.container = HBoxBuilder.create()
-                    .spacing(10)
-                    .children(position, stackPane, pointsPane)
-                    .alignment(Pos.CENTER)
-                    .build();
+            this.container = new HBox(position, stackPane, pointsPane);
+            this.container.setSpacing(10);
+            this.container.setAlignment(Pos.CENTER);
 
             this.text = data;
             this.points = points;
@@ -200,55 +184,44 @@ public class BoardWidget {
 
             this.currentPoints = 0;
 
-            Rectangle backDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(480)
-                    .arcHeight(ARC_RADIUS)
-                    .arcWidth(ARC_RADIUS)
-                    .fill(Color.ORANGERED)
-                    .styleClass("ff-total-score")
-                    .build();
+            Rectangle backDrop = new Rectangle();
+            backDrop.setHeight(ANSWER_HEIGHT);
+            backDrop.setWidth(480);
+            backDrop.setArcHeight(ARC_RADIUS);
+            backDrop.setArcWidth(ARC_RADIUS);
+            backDrop.setFill(Color.ORANGERED);
+            backDrop.setStyle("ff-total-score");
 
-            Label label = LabelBuilder.create()
-                    .font(Font.font("null", FontWeight.BOLD, 20))
-                    .textFill(Color.WHITE)
-                    .text("TOTAL")
-                    .build();
+            Label label = new Label();
+            label.setFont(Font.font("null", FontWeight.BOLD, 20));
+            label.setTextFill(Color.WHITE);
+            label.setText("TOTAL");
 
-            StackPane stackPane = StackPaneBuilder.create()
-                    .children(backDrop, label)
-                    .build();
+            StackPane stackPane = new StackPane(backDrop, label);
 
-            Rectangle positionBackDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(60)
-                    .visible(false)
-                    .build();
+            Rectangle positionBackDrop = new Rectangle();
+            positionBackDrop.setHeight(ANSWER_HEIGHT);
+            positionBackDrop.setWidth(60);
+            positionBackDrop.setVisible(false);
 
-            this.pointsLabel = LabelBuilder.create()
-                    .font(Font.font("null", FontWeight.BOLD, 22))
-                    .text("0")
-                    .textFill(Color.WHITE)
-                    .build();
+            this.pointsLabel = new Label();
+            this.pointsLabel.setFont(Font.font("null", FontWeight.BOLD, 22));
+            this.pointsLabel.setText("0");
+            this.pointsLabel.setTextFill(Color.WHITE);
 
-            Rectangle pointsBackDrop = RectangleBuilder.create()
-                    .height(ANSWER_HEIGHT)
-                    .width(60)
-                    .arcHeight(ARC_RADIUS)
-                    .arcWidth(ARC_RADIUS)
-                    .fill(Color.ORANGERED)
-                    .styleClass("ff-total-score")
-                    .build();
+            Rectangle pointsBackDrop = new Rectangle();
+            pointsBackDrop.setHeight(ANSWER_HEIGHT);
+            pointsBackDrop.setWidth(60);
+            pointsBackDrop.setArcHeight(ARC_RADIUS);
+            pointsBackDrop.setArcWidth(ARC_RADIUS);
+            pointsBackDrop.setFill(Color.ORANGERED);
+            pointsBackDrop.setStyle("ff-total-score");
 
-            StackPane pointsPane = StackPaneBuilder.create()
-                    .children(pointsBackDrop, pointsLabel)
-                    .build();
+            StackPane pointsPane = new StackPane(pointsBackDrop, pointsLabel);
 
-            this.container = HBoxBuilder.create()
-                    .spacing(10)
-                    .children(positionBackDrop, stackPane, pointsPane)
-                    .alignment(Pos.CENTER)
-                    .build();
+            this.container = new HBox(positionBackDrop, stackPane, pointsPane);
+            this.container.setSpacing(10);
+            this.container.setAlignment(Pos.CENTER);
 
         }
 
