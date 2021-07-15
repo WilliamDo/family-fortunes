@@ -27,5 +27,5 @@ jobs:
       run: ./gradlew build
     - uses: actions/upload-artifact@v2
       with:
-        name: jar
+        name: family-fortunes
         path: build/libs/family-fortunes.jar
