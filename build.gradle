@@ -8,12 +8,24 @@ repositories {
 	mavenCentral()
 }
 
-application {
-	// Define the main class for the application.
-	mainClass = "uk.co.ultimaspin.familyfortunes.Main"
-}
-
 javafx {
 	version = "11.0.2"
 	modules = [ "javafx.controls", "javafx.media"]
+}
+
+dependencies {
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
+}
+
+mainClassName = 'uk.co.ultimaspin.familyfortunes.Main'
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'uk.co.ultimaspin.familyfortunes.MainLauncher'
+	}
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
 }
