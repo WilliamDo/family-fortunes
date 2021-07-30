@@ -31,5 +31,5 @@ jobs:
       run: ./gradlew jlink
     - uses: actions/upload-artifact@v2
       with:
-        name: family-fortunes
+        name: family-fortunes-${{ matrix.os }}
         path: build/image/
